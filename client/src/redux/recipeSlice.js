@@ -1,18 +1,23 @@
+//src/recipeSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// Use your deployed API URL - adds /recipes to the base URL
-const BASE_URL = process.env.REACT_APP_API_URL || 'https://recipedia-server-h9ak49ifa-sarvani-5s-projects.vercel.app/api';
-const API_URL = `${BASE_URL}/recipes`;
+// ✅ FIXED: Use the correct backend URL from Image 2
+const BASE_URL = process.env.REACT_APP_API_URL || 'https://recipedia-server-cyan.vercel.app';
+const API_URL = `${BASE_URL}/api/recipes`;
+
+console.log('🔗 Connecting to API:', API_URL);
 
 // CREATE - Add new recipe
 export const createRecipe = createAsyncThunk(
   'recipes/createRecipe',
   async (recipeData, { rejectWithValue }) => {
     try {
+      console.log('Creating recipe:', recipeData);
       const response = await axios.post(API_URL, recipeData);
       return response.data.data;
     } catch (error) {
+      console.error('❌ Create Recipe Error:', error.response || error);
       return rejectWithValue(error.response?.data?.message || 'Error creating recipe');
     }
   }
@@ -24,9 +29,12 @@ export const fetchRecipes = createAsyncThunk(
   async (cuisine = 'All', { rejectWithValue }) => {
     try {
       const url = cuisine === 'All' ? API_URL : `${API_URL}?cuisine=${cuisine}`;
+      console.log('📡 Fetching recipes from:', url);
       const response = await axios.get(url);
+      console.log('✅ Recipes fetched:', response.data);
       return response.data.data;
     } catch (error) {
+      console.error('❌ Fetch Recipes Error:', error.response || error);
       return rejectWithValue(error.response?.data?.message || 'Error fetching recipes');
     }
   }
@@ -40,6 +48,7 @@ export const fetchRecipeById = createAsyncThunk(
       const response = await axios.get(`${API_URL}/${id}`);
       return response.data.data;
     } catch (error) {
+      console.error('❌ Fetch Recipe Error:', error.response || error);
       return rejectWithValue(error.response?.data?.message || 'Error fetching recipe');
     }
   }
@@ -53,6 +62,7 @@ export const updateRecipeAsync = createAsyncThunk(
       const response = await axios.put(`${API_URL}/${id}`, data);
       return response.data.data;
     } catch (error) {
+      console.error('❌ Update Recipe Error:', error.response || error);
       return rejectWithValue(error.response?.data?.message || 'Error updating recipe');
     }
   }
@@ -66,6 +76,7 @@ export const deleteRecipeAsync = createAsyncThunk(
       await axios.delete(`${API_URL}/${id}`);
       return id;
     } catch (error) {
+      console.error('❌ Delete Recipe Error:', error.response || error);
       return rejectWithValue(error.response?.data?.message || 'Error deleting recipe');
     }
   }
@@ -79,6 +90,7 @@ export const likeRecipeAsync = createAsyncThunk(
       const response = await axios.patch(`${API_URL}/${id}/like`);
       return response.data.data;
     } catch (error) {
+      console.error('❌ Like Recipe Error:', error.response || error);
       return rejectWithValue(error.response?.data?.message || 'Error liking recipe');
     }
   }
