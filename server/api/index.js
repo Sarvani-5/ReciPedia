@@ -13,7 +13,7 @@ const app = express();
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://recipedia-client.vercel.app', // Update with your actual client URL
+    'https://reci-pedia.vercel.app/', // Update with your actual client URL
   ],
   credentials: true
 }));
