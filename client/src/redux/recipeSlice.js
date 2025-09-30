@@ -1,7 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api/recipes';
+// Use your deployed API URL - adds /recipes to the base URL
+const BASE_URL = process.env.REACT_APP_API_URL || 'https://recipedia-server-h9ak49ifa-sarvani-5s-projects.vercel.app/api';
+const API_URL = `${BASE_URL}/recipes`;
+
 // CREATE - Add new recipe
 export const createRecipe = createAsyncThunk(
   'recipes/createRecipe',
