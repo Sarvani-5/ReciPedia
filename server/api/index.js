@@ -9,14 +9,9 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
-app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'https://reci-pedia.vercel.app/', // Update with your actual client URL
-  ],
-  credentials: true
-}));
+// ✅ SIMPLE FIX: Allow all origins (use for testing)
+app.use(cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -32,8 +27,9 @@ const connectToDatabase = async () => {
   try {
     await connectDB();
     isConnected = true;
+    console.log('✅ New database connection established');
   } catch (error) {
-    console.error('Database connection error:', error);
+    console.error('❌ Database connection error:', error);
     throw error;
   }
 };
@@ -46,7 +42,8 @@ app.use(async (req, res, next) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Database connection failed'
+      message: 'Database connection failed',
+      error: error.message
     });
   }
 });
@@ -56,7 +53,8 @@ app.get('/api', (req, res) => {
   res.json({ 
     message: '🍳 ReciPedia API is running!',
     status: 'Active',
-    database: 'MongoDB Atlas'
+    database: 'MongoDB Atlas',
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -65,11 +63,11 @@ app.use('/api/recipes', recipeRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('Error:', err.stack);
   res.status(500).json({
     success: false,
     message: 'Something went wrong!',
-    error: err.message
+    error: process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message
   });
 });
 
@@ -77,7 +75,8 @@ app.use((err, req, res, next) => {
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    message: 'Route not found'
+    message: 'Route not found',
+    requestedUrl: req.url
   });
 });
 
