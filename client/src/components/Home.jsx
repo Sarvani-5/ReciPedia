@@ -45,7 +45,6 @@ function Home() {
     <div className="home">
       <div className="hero-section">
         <h1 className="hero-title">Discover & Share Amazing Recipes</h1>
-        <p className="hero-subtitle">Join our decentralized culinary community powered by Web3</p>
       </div>
 
       <div className="filter-section">
